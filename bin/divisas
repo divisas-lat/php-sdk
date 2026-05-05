@@ -1,0 +1,94 @@
+#!/usr/bin/env php
+<?php
+
+if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
+    require __DIR__ . '/../vendor/autoload.php';
+} elseif (file_exists(__DIR__ . '/../../../autoload.php')) {
+    require __DIR__ . '/../../../autoload.php';
+} else {
+    fwrite(STDERR, "Cannot find autoload.php. Please install dependencies.\n");
+    exit(1);
+}
+
+use DivisasLat\Client;
+use DivisasLat\Enums\Country;
+use DivisasLat\Enums\Currency;
+
+// The wow factor CLI tool
+function printUsage() {
+    echo "divisas-lat CLI Tool\n";
+    echo "Usage:\n";
+    echo "  divisas rate <country> [currency]      Get current exchange rate\n";
+    echo "  divisas convert <amount> <from> to <to> in <country>   Convert currencies\n";
+    echo "  divisas stats <country> [currency]     Get 30-day stats\n";
+    echo "\nExamples:\n";
+    echo "  divisas rate GT\n";
+    echo "  divisas convert 100 USD to GTQ in GT\n";
+    exit(1);
+}
+
+if ($argc < 3) {
+    printUsage();
+}
+
+$command = $argv[1];
+
+// Default to anonymous, but allow API key from env
+$apiKey = getenv('DIVISAS_API_KEY') ?: null;
+$client = new Client($apiKey);
+
+try {
+    switch ($command) {
+        case 'rate':
+            if ($argc < 3) printUsage();
+            $country = strtoupper($argv[2]);
+            $currency = isset($argv[3]) ? strtoupper($argv[3]) : 'USD';
+            
+            $rateResponse = $client->query()
+                ->forCountry($country)
+                ->withCurrency($currency)
+                ->getToday();
+
+            echo "🌎 Country: {$rateResponse->country} | Base: {$rateResponse->baseCurrency}\n";
+            echo "📈 Rate: {$rateResponse->rates[0]->formatBuy('Buy: ')} / {$rateResponse->rates[0]->formatSell('Sell: ')}\n";
+            break;
+
+        case 'convert':
+            // divisas convert 100 USD to GTQ in GT
+            if ($argc < 7) printUsage();
+            
+            $amount = (float)$argv[2];
+            $from = strtoupper($argv[3]);
+            $to = strtoupper($argv[5]);
+            $country = strtoupper($argv[7]);
+
+            $conversion = $client->query()
+                ->forCountry($country)
+                ->withCurrency($from)
+                ->convert($to, $amount);
+
+            echo "💸 Result: {$amount} {$from} = {$conversion->formatResult()} {$to}\n";
+            break;
+
+        case 'stats':
+            $country = strtoupper($argv[2]);
+            $currency = isset($argv[3]) ? strtoupper($argv[3]) : 'USD';
+            
+            $stats = $client->query()
+                ->forCountry($country)
+                ->withCurrency($currency)
+                ->getStats();
+                
+            echo "📊 Stats for {$country} (30 days)\n";
+            echo "Min: {$stats->stats['min']}\n";
+            echo "Max: {$stats->stats['max']}\n";
+            echo "Avg: {$stats->stats['avg']}\n";
+            break;
+
+        default:
+            printUsage();
+    }
+} catch (\Exception $e) {
+    echo "❌ Error: " . $e->getMessage() . "\n";
+    exit(1);
+}
