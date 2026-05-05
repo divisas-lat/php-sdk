@@ -17,9 +17,9 @@ composer require divisas-lat/php-sdk
 Para utilizar este SDK necesitas una **API Key**. El acceso sin autenticación a la API de Divisas.lat cuenta con límites de uso muy estrictos.
 
 Puedes obtener tu API Key gratuita registrándote en el landing page oficial:
-👉 **[Obtener mi API Key en Divisas.lat](https://divisas.lat)**
+**[Obtener mi API Key en Divisas.lat](https://divisas.lat)**
 
-## Características 🚀
+## Características
 - **Tipado Estricto (DTOs)**: Respuestas orientadas a objetos, no arrays, para máximo autocompletado en tu IDE.
 - **Fluent Query Builder**: Una API elegante y expresiva para construir tus llamadas.
 - **Caché Transparente**: Soporte para PSR-16 (y Laravel Cache) para ahorrar peticiones.
