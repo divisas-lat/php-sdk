@@ -29,7 +29,7 @@ return [
     | Cache Time-To-Live
     |--------------------------------------------------------------------------
     |
-    | How long (in seconds) the API responses should be cached.
+    | How long (in seconds) the API responses should be cached locally.
     | Default is 1 hour (3600 seconds).
     |
     */
