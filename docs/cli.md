@@ -21,22 +21,22 @@ export DIVISAS_API_KEY=tu_api_key_aqui
 Obtén el tipo de cambio del día para un país y una divisa base.
 ```bash
 $ divisas rate GT
-🌎 Country: GT | Base: GTQ
-📈 Rate: Buy: 7.6302 / Sell: 7.6302
+Country: GT | Base: GTQ
+Rate: Buy: 7.6302 / Sell: 7.6302
 ```
 
 ### 2. Conversión Rápida (`convert`)
 Convierte una cantidad de una moneda a otra en un país en tiempo real.
 ```bash
 $ divisas convert 100 USD to GTQ in GT
-💸 Result: 100 USD = 763.02 GTQ
+Result: 100 USD = 763.02 GTQ
 ```
 
 ### 3. Resumen Estadístico (`stats`)
 Obtiene información estadística descriptiva de la moneda de los últimos 30 días.
 ```bash
 $ divisas stats GT
-📊 Stats for GT (30 days)
+Stats for GT (30 days)
 Min: 7.6120
 Max: 7.6950
 Avg: 7.6384
