@@ -38,49 +38,45 @@ class RatesBuilder
         return $this;
     }
 
-    private function requireCountry(): void
+    private function getCountry(): Country|string
     {
         if ($this->country === null) {
             throw new DivisasException('Country is required. Call forCountry() first.');
         }
+        return $this->country;
     }
 
     public function getToday(): TodayRatesResponse
     {
-        $this->requireCountry();
+        $country = $this->getCountry();
         if ($this->currency) {
-            return $this->ratesResource->getByCurrency($this->country, $this->currency);
+            return $this->ratesResource->getByCurrency($country, $this->currency);
         }
-        return $this->ratesResource->getToday($this->country);
+        return $this->ratesResource->getToday($country);
     }
 
     public function getHistory(string $from, string $to): HistoricalRateResponse
     {
-        $this->requireCountry();
-        return $this->ratesResource->getHistory($this->country, $from, $to, $this->currency ?? 'USD');
+        return $this->ratesResource->getHistory($this->getCountry(), $from, $to, $this->currency ?? 'USD');
     }
 
     public function getStats(string $period = '30d'): StatsResponse
     {
-        $this->requireCountry();
-        return $this->ratesResource->getStats($this->country, $this->currency ?? 'USD', $period);
+        return $this->ratesResource->getStats($this->getCountry(), $this->currency ?? 'USD', $period);
     }
 
-    public function convert(Currency|string $to, float $amount, ?string $date = null): ConversionResponse
+    public function convert(Currency|string $to, float $amount): ConversionResponse
     {
-        $this->requireCountry();
-        return $this->ratesResource->convert($this->country, $this->currency ?? 'USD', $to, $amount, $date);
+        return $this->ratesResource->convert($this->getCountry(), $this->currency ?? 'USD', $to, $amount);
     }
 
     public function getForecast(int $days = 7): ForecastResponse
     {
-        $this->requireCountry();
-        return $this->ratesResource->getForecast($this->country, $days, $this->currency ?? 'USD');
+        return $this->ratesResource->getForecast($this->getCountry(), $days, $this->currency ?? 'USD');
     }
 
     public function getPercentile(string $period = '1y'): PercentileResponse
     {
-        $this->requireCountry();
-        return $this->ratesResource->getPercentile($this->country, $this->currency ?? 'USD', $period);
+        return $this->ratesResource->getPercentile($this->getCountry(), $this->currency ?? 'USD', $period);
     }
 }

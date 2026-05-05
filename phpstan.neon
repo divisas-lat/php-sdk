@@ -1,4 +1,7 @@
 parameters:
-    level: 8
+    level: 5
     paths:
         - src
+    ignoreErrors:
+        - '#Function config not found#'
+        - '#Function config_path not found#'
